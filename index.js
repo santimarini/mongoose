@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const env = process.env.NODE_ENV || "development";
+const config = require(__dirname + "/src/models/config")[env];
 
 const app = express();
 
@@ -10,7 +12,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
 // connect to db
-mongoose.connect('mongodb://localhost/Bunkey2')
+mongoose.connect(config.DB.URI)
   .then(() => console.log('Connected to DB'))
   .catch(err => console.log(err));
 
