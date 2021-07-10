@@ -19,7 +19,7 @@ class AuthController {
       const token = jwt.sign({id: user._id}, config.JWT.SECRET_KEY, {
         expiresIn: (60 * 60) //expires in an hour
       });
-      res.send(token);
+      res.send({token: token} );
     }
   }
 
