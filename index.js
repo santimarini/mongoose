@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/src/models/config")[env];
+const config = require(__dirname + "/src/config/env");
 
 const app = express();
 

@@ -1,4 +1,6 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/users');
+const config = require('../config/env');
 
 // auth controller class
 class AuthController {
@@ -6,14 +8,17 @@ class AuthController {
     const {email, password} = req.body;
 
     const user = await User.findOne({
-      email: email,
-      password: password
+      email: email
     });
 
-    if (!user) {
-      res.status(400).send({body: "Invalid user or password."});
+    const passwordMatch = await User.comparePasswords(password, user.password);
+
+    if (!user || !passwordMatch) {
+      res.status(400).send({error: 'Invalid user or password.'});
     } else {
-      const token = '';
+      const token = jwt.sign({id: user._id}, config.JWT.SECRET_KEY, {
+        expiresIn: (60 * 60) //expires in an hour
+      });
       res.send(token);
     }
   }
@@ -21,7 +26,7 @@ class AuthController {
   async signUp(req, res) {
     const {name, email, password} = req.body;
     if (!name || !email || !password) {
-      res.status(400).send({body: "Name, email and password are required."})
+      res.status(400).send({error: 'Name, email and password are required.'})
     }
 
     // check if user already exists
